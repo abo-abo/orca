@@ -47,17 +47,34 @@
     (" - Stack Overflow" ""))
   "A list of (REGEX REP) to be applied on link title.")
 
-(defvar orca-handler-list
-  (list
-   (orca-handler-wiki
-    "https://emacs.stackexchange.com/"
-    "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
-   (orca-handler-current-buffer "\\* Tasks")
-   (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles"))
+(defcustom orca-handler-list
+  (let ((emacs "~/Dropbox/org/wiki/emacs.org")
+        (entor "~/Dropbox/org/ent.org"))
+    `((orca-handler-match-url "https://www.reddit.com/" ,emacs "Reddit")
+      (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
+      (orca-handler-current-buffer "\\* Tasks")
+      (orca-handler-file ,entor "\\* Articles")))
   "List of handlers by priority.
 
 Each item is a function of zero arguments that opens an
-appropiriate file and returns non-nil on match.")
+appropiriate file and returns non-nil on match."
+  :type '(repeat
+          (choice
+           (list
+            :tag "Current buffer"
+            (const orca-handler-current-buffer)
+            (string :tag "Heading"))
+           (list
+            :tag "URL matching regex"
+            (const orca-handler-match-url)
+            (string :tag "URL")
+            (string :tag "File")
+            (string :tag "Heading"))
+           (list
+            :tag "Default"
+            (const orca-handler-file)
+            (string :tag "File")
+            (string :tag "Heading")))))
 
 ;;* Functions
 (defun orca-wash-link ()
@@ -92,32 +109,29 @@ Try to remove superfluous information, like the website title."
 
 (defun orca-handler-current-buffer (heading)
   "Select the current `org-mode' buffer with HEADING."
-  (lambda ()
-    ;; We are in the server buffer; the actual current buffer is first
-    ;; on `buffer-list'.
-    (let ((orig-buffer (nth 0 (buffer-list))))
-      (setq orca-dbg-buf orig-buffer)
-      (when (with-current-buffer orig-buffer
-              (and (eq major-mode 'org-mode)
-                   (save-excursion
-                     (goto-char (point-min))
-                     (re-search-forward heading nil t))))
-        (switch-to-buffer orig-buffer)
-        (goto-char (match-end 0))))))
+  ;; We are in the server buffer; the actual current buffer is first
+  ;; on `buffer-list'.
+  (let ((orig-buffer (nth 0 (buffer-list))))
+    (setq orca-dbg-buf orig-buffer)
+    (when (with-current-buffer orig-buffer
+            (and (eq major-mode 'org-mode)
+                 (save-excursion
+                   (goto-char (point-min))
+                   (re-search-forward heading nil t))))
+      (switch-to-buffer orig-buffer)
+      (goto-char (match-end 0)))))
 
 (defun orca-handler-file (file heading)
   "Select FILE at HEADING."
-  (lambda ()
-    (when (file-exists-p file)
-      (find-file file)
-      (goto-char (point-min))
-      (re-search-forward heading nil t))))
+  (when (file-exists-p file)
+    (find-file file)
+    (goto-char (point-min))
+    (re-search-forward heading nil t)))
 
-(defun orca-handler-wiki (url-regex file heading)
+(defun orca-handler-match-url (url-regex file heading)
   "When URL matches URL-REGEX select FILE at HEADING."
-  (lambda ()
-    (when (string-match url-regex (caar org-stored-links))
-      (funcall (orca-handler-file file heading)))))
+  (when (string-match url-regex (caar org-stored-links))
+    (orca-handler-file file heading)))
 
 (defun orca-handle-link ()
   "Select a location to store the current link."
@@ -125,7 +139,8 @@ Try to remove superfluous information, like the website title."
   (let ((hands orca-handler-list)
         hand)
     (while (and (setq hand (pop hands))
-                (null (funcall hand))))))
+                (null
+                 (apply (car hand) (cdr hand)))))))
 
 (provide 'orca)
 
