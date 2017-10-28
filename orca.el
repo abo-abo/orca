@@ -5,7 +5,6 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/orca
 ;; Version: 0.1.0
-;; Package-Requires: ((counsel "0.9.1"))
 ;; Keywords: org, capture
 
 ;; This file is not part of GNU Emacs
@@ -29,10 +28,8 @@
 ;; several convenient recipes for configuring `org-capture'.
 
 ;;; Code:
-
 (require 'org-protocol)
 (require 'org-capture)
-(require 'counsel)
 
 ;;* Org config
 (add-to-list 'org-capture-templates
@@ -50,6 +47,18 @@
     (" - Stack Overflow" ""))
   "A list of (REGEX REP) to be applied on link title.")
 
+(defvar orca-handler-list
+  (list
+   (orca-handler-wiki
+    "https://emacs.stackexchange.com/"
+    "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
+   (orca-handler-current-buffer "\\* Tasks")
+   (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles"))
+  "List of handlers by priority.
+
+Each item is a function of zero arguments that opens an
+appropiriate file and returns non-nil on match.")
+
 ;;* Functions
 (defun orca-wash-link ()
   "Return a pretty-printed top of `org-stored-links'.
@@ -61,23 +70,33 @@ Try to remove superfluous information, like the website title."
                    (nth 0 repl) (nth 1 repl) title)))
     (org-make-link-string link title)))
 
+(defun orca-require-program (program)
+  "Check system for PROGRAM, printing error if unfound."
+  (or (and (stringp program)
+           (not (string= program ""))
+           (executable-find program))
+      (user-error "Required program \"%s\" not found in your path" program)))
+
 (defun orca-raise-frame ()
   "Put Emacs frame into focus."
   (if (eq system-type 'gnu/linux)
       (progn
-        (counsel-require-program "wmctrl")
+        (orca-require-program "wmctrl")
         (call-process
          "wmctrl" nil nil nil "-i" "-R"
          (frame-parameter (selected-frame) 'outer-window-id)))
     (raise-frame)))
 
 ;;* Handlers
-(defvar orca-buf nil)
+(defvar orca-dbg-buf nil)
+
 (defun orca-handler-current-buffer (heading)
   "Select the current `org-mode' buffer with HEADING."
   (lambda ()
+    ;; We are in the server buffer; the actual current buffer is first
+    ;; on `buffer-list'.
     (let ((orig-buffer (nth 0 (buffer-list))))
-      (setq orca-buf orig-buffer)
+      (setq orca-dbg-buf orig-buffer)
       (when (with-current-buffer orig-buffer
               (and (eq major-mode 'org-mode)
                    (save-excursion
@@ -100,24 +119,10 @@ Try to remove superfluous information, like the website title."
     (when (string-match url-regex (caar org-stored-links))
       (funcall (orca-handler-file file heading)))))
 
-(defvar orca-handler-list
-  (list
-   (orca-handler-wiki
-    "https://emacs.stackexchange.com/"
-    "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
-   (orca-handler-current-buffer "\\* Tasks")
-   (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles"))
-  "List of handlers by priority.
-
-Each item is a function of zero arguments that opens an
-appropiriate file and returns non-nil on match.")
-
 (defun orca-handle-link ()
   "Select a location to store the current link."
   (orca-raise-frame)
-  (let ((link (caar org-stored-links))
-        (title (cadr (car org-stored-links)))
-        (hands orca-handler-list)
+  (let ((hands orca-handler-list)
         hand)
     (while (and (setq hand (pop hands))
                 (null (funcall hand))))))

@@ -8,3 +8,6 @@ def test_interactive(recipe):
     if el.file_exists_p("../swiper/targets/plain.el"):
         elfs.append(plain)
     return [" ".join(["emacs -Q"] + ["-l " + p for p in elfs])]
+
+def compile(recipe):
+    return ["emacs -batch --eval '(byte-compile-file \"orca.el\")'"]
