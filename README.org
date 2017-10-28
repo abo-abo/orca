@@ -1,0 +1,39 @@
+* Introduction
+Orca is an ORg CApture list of recipes; mainly for capturing from a
+browser.
+
+The more this package is configured, the less refiling you'll do on
+your captures: they will go directly to where they belong.
+
+Here is my example list of configurations:
+- Capture URL matching https://www.reddit.com/ to =emacs.org:Reddit=
+- Capture URL matching https://emacs.stackexchange.com/ to =emacs.org:Questions=
+- If the current buffer is e.g. =foo.org= and it has a =* Tasks= heading, capture to =foo.rog:Tasks=
+- If nothing else matches, capture to =ent.org:Articles=.
+
+* Configuration
+Just requiring the package, only the "capture to current buffer"
+method will work, since no file paths are recognized:
+#+begin_src elisp
+(require 'orca)
+#+end_src
+
+Customize the file paths to your liking using this template:
+#+begin_src elisp
+(setq orca-handler-list
+      ((orca-handler-match-url
+        "https://www.reddit.com/"
+        "~/Dropbox/org/wiki/emacs.org"
+        "Reddit")
+       (orca-handler-match-url
+        "https://emacs.stackexchange.com/"
+        "~/Dropbox/org/wiki/emacs.org"
+        "\\* Questions")
+       (orca-handler-current-buffer
+        "\\* Tasks")
+       (orca-handler-file
+        "~/Dropbox/org/ent.org"
+        "\\* Articles")))
+#+end_src
+
+It's also possible to customize interactively via ~M-x~ =customize-group= ~RET~ =orca= ~RET~.
