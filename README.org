@@ -21,19 +21,19 @@ method will work, since no file paths are recognized:
 Customize the file paths to your liking using this template:
 #+begin_src elisp
 (setq orca-handler-list
-      ((orca-handler-match-url
-        "https://www.reddit.com/"
-        "~/Dropbox/org/wiki/emacs.org"
-        "Reddit")
-       (orca-handler-match-url
-        "https://emacs.stackexchange.com/"
-        "~/Dropbox/org/wiki/emacs.org"
-        "\\* Questions")
-       (orca-handler-current-buffer
-        "\\* Tasks")
-       (orca-handler-file
-        "~/Dropbox/org/ent.org"
-        "\\* Articles")))
+      '((orca-handler-match-url
+         "https://www.reddit.com/emacs/"
+         "~/Dropbox/org/wiki/emacs.org"
+         "Reddit")
+        (orca-handler-match-url
+         "https://emacs.stackexchange.com/"
+         "~/Dropbox/org/wiki/emacs.org"
+         "\\* Questions")
+        (orca-handler-current-buffer
+         "\\* Tasks")
+        (orca-handler-file
+         "~/Dropbox/org/ent.org"
+         "\\* Articles")))
 #+end_src
 
 It's also possible to customize interactively via ~M-x~ =customize-group= ~RET~ =orca= ~RET~.

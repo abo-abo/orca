@@ -51,7 +51,7 @@
 (defcustom orca-handler-list
   (let ((emacs "~/Dropbox/org/wiki/emacs.org")
         (entor "~/Dropbox/org/ent.org"))
-    `((orca-handler-match-url "https://www.reddit.com/" ,emacs "Reddit")
+    `((orca-handler-match-url "https://www.reddit.com/r/emacs" ,emacs "Reddit")
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
       (orca-handler-current-buffer "\\* Tasks")
       (orca-handler-file ,entor "\\* Articles")))
