@@ -130,7 +130,7 @@ Try to remove superfluous information, like the website title."
     (re-search-forward heading nil t)))
 
 (defun orca-handler-match-url (url-regex file heading)
-  "When URL matches URL-REGEX select FILE at HEADING."
+  "For link matching URL-REGEX select FILE at HEADING."
   (when (string-match url-regex (caar org-stored-links))
     (orca-handler-file file heading)))
 
