@@ -1,11 +1,12 @@
-;;; cook.el --- Org Capture -*- lexical-binding: t -*-
+;;; orca.el --- Org Capture -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2017 Oleh Krehel
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/orca
 ;; Version: 0.1.0
-;; Keywords: org, capture
+;; Package-Requires: ((emacs "24.3"))
+;; Keywords: org, convenience
 
 ;; This file is not part of GNU Emacs
 
