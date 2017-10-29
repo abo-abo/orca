@@ -6,9 +6,9 @@ The more this package is configured, the less refiling you'll do on
 your captures: they will go directly to where they belong.
 
 Here is my example list of configurations:
-- Capture URL matching https://www.reddit.com/ to =emacs.org:Reddit=
+- Capture URL matching https://www.reddit.com/r/emacs to =emacs.org:Reddit=
 - Capture URL matching https://emacs.stackexchange.com/ to =emacs.org:Questions=
-- If the current buffer is e.g. =foo.org= and it has a =* Tasks= heading, capture to =foo.rog:Tasks=
+- If the current buffer is e.g. =foo.org= and it has a =* Tasks= heading, capture to =foo.org:Tasks=
 - If nothing else matches, capture to =ent.org:Articles=.
 
 * Configuration
