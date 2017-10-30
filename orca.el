@@ -119,6 +119,9 @@ Try to remove superfluous information, like the website title."
                  (save-excursion
                    (goto-char (point-min))
                    (re-search-forward heading nil t))))
+      (org-capture-put
+       :immediate-finish t
+       :jump-to-captured t)
       (switch-to-buffer orig-buffer)
       (goto-char (match-end 0)))))
 
