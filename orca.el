@@ -178,7 +178,7 @@ Try to remove superfluous information, like the website title."
          (default-directory orca-org-directory)
          (old-links
           (counsel--sl
-           (format "rg -S --line-number '%s'" link))))
+           (format "rg -S --line-number '\\[%s\\]'" link))))
     (if old-links
         (progn
           (message "%d old link(s)" (length old-links))
