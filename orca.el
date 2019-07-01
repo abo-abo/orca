@@ -49,11 +49,15 @@
   "A list of (REGEX REP) to be applied on link title."
   :type 'list)
 
+(defcustom orca-org-directory "~/Dropbox/org"
+  "The directory where the Org files are."
+  :type 'directory)
+
 (defcustom orca-handler-list
-  (let ((emacs "~/Dropbox/org/wiki/emacs.org")
-        (reddit "~/Dropbox/org/wiki/reddit.org")
-        (entor "~/Dropbox/org/wiki/ent.org")
-        (stack "~/Dropbox/org/wiki/stack.org"))
+  (let ((emacs (expand-file-name "wiki/emacs.org" orca-org-directory))
+        (reddit (expand-file-name "wiki/reddit.org" orca-org-directory))
+        (entor (expand-file-name "wiki/ent.org" orca-org-directory))
+        (stack (expand-file-name "wiki/stack.org" orca-org-directory)))
     `((orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/emacs" ,emacs "\\* Reddit")
       (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/" ,reddit "\\* Posts")
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
