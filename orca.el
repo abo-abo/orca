@@ -158,7 +158,11 @@ Try to remove superfluous information, like the website title."
   (when (file-exists-p file)
     (find-file file)
     (goto-char (point-min))
-    (re-search-forward heading nil t)))
+    (re-search-forward heading nil t)
+    (org-capture-put
+     :immediate-finish t
+     :jump-to-captured t)
+    (point)))
 
 (defun orca-handler-match-url (url-regex file heading)
   "For link matching URL-REGEX select FILE at HEADING."
