@@ -169,14 +169,35 @@ Try to remove superfluous information, like the website title."
   (when (string-match url-regex (caar org-stored-links))
     (orca-handler-file file heading)))
 
+(defun orca-detect-already-captured-link ()
+  (let* ((link (caar org-stored-links))
+         (default-directory orca-org-directory)
+         (old-links
+          (counsel--sl
+           (format "rg -S --line-number '%s'" link))))
+    (if old-links
+        (progn
+          (message "%d old links" (length old-links))
+          (let ((old-link (car old-links)))
+            (if (string-match "\\([^:]+\\):\\([0-9]+\\):\\*+ *TODO" old-link)
+                (let ((file (match-string 1 old-link))
+                      (line (string-to-number (match-string 2 old-link))))
+                  (find-file file)
+                  (goto-char (point-min))
+                  (forward-line (1- line)))
+              (error "Could not match %s" old-link)))
+          (org-capture-kill)
+          t))))
+
 (defun orca-handle-link ()
   "Select a location to store the current link."
   (orca-raise-frame)
-  (let ((hands orca-handler-list)
-        hand)
-    (while (and (setq hand (pop hands))
-                (null
-                 (apply (car hand) (cdr hand)))))))
+  (unless (orca-detect-already-captured-link)
+    (let ((hands orca-handler-list)
+          hand)
+      (while (and (setq hand (pop hands))
+                  (null
+                   (apply (car hand) (cdr hand))))))))
 
 (provide 'orca)
 
