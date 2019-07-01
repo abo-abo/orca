@@ -181,7 +181,7 @@ Try to remove superfluous information, like the website title."
            (format "rg -S --line-number '%s'" link))))
     (if old-links
         (progn
-          (message "%d old links" (length old-links))
+          (message "%d old link(s)" (length old-links))
           (let ((old-link (car old-links)))
             (if (string-match "\\([^:]+\\):\\([0-9]+\\):\\*+ *TODO" old-link)
                 (let ((file (match-string 1 old-link))
@@ -190,13 +190,15 @@ Try to remove superfluous information, like the website title."
                   (goto-char (point-min))
                   (forward-line (1- line)))
               (error "Could not match %s" old-link)))
-          (org-capture-kill)
           t))))
 
 (defun orca-handle-link ()
   "Select a location to store the current link."
   (orca-raise-frame)
-  (unless (orca-detect-already-captured-link)
+  (if (and (file-exists-p orca-org-directory)
+           (file-exists-p (expand-file-name ".git" orca-org-directory))
+           (orca-detect-already-captured-link))
+      (org-capture-kill)
     (let ((hands orca-handler-list)
           hand)
       (while (and (setq hand (pop hands))
