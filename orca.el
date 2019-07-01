@@ -33,9 +33,11 @@
 (require 'org-capture)
 
 ;;* Org config
-(add-to-list 'org-capture-templates
-             '("l" "Link" entry (function orca-handle-link)
-               "* TODO %(orca-wash-link)\nAdded: %T\n%?"))
+;; sometimes it's "l", sometimes "L", unsure why
+(dolist (key '("l" "L"))
+  (add-to-list 'org-capture-templates
+               `(,key "Link" entry #'orca-handle-link
+                      "* TODO %(orca-wash-link)\nAdded: %T\n%?")))
 (setq org-protocol-default-template-key "l")
 
 ;;* Orca config
