@@ -33,8 +33,10 @@
 (require 'org-capture)
 
 ;;* Org config
-;; sometimes it's "l", sometimes "L", unsure why
-(dolist (key '("l" "L"))
+;; In the Firefox extension https://github.com/sprig/org-capture-extension:
+;; - "l" is unselected template
+;; - "p" is selected template
+(dolist (key '("l" "p"))
   (add-to-list 'org-capture-templates
                `(,key "Link" entry #'orca-handle-link
                       "* TODO %(orca-wash-link)\nAdded: %T\n%?")))
