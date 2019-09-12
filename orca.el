@@ -67,7 +67,7 @@
       (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/" ,reddit "\\* Posts")
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
       (orca-handler-match-url "http://stackoverflow.com/" ,stack "\\* Questions")
-      (orca-handler-match-url "https://github.com/\\(?:\\sw\\|\\s_\\)+/\\(?:\\sw\\|\\s_\\)+" ,github "\\* Repos")
+      (orca-handler-match-url "https://git\\(?:hub\\|lab\\).com/\\(?:\\sw\\|\\s_\\)+/\\(?:\\sw\\|\\s_\\)+" ,github "\\* Repos")
       (orca-handler-project)
       (orca-handler-current-buffer "\\* Tasks")
       (orca-handler-file ,entor "\\* Articles")))
