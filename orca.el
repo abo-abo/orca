@@ -102,7 +102,7 @@ Try to remove superfluous information, like the website title."
     (dolist (repl orca-wash-list)
       (setq title (replace-regexp-in-string
                    (nth 0 repl) (nth 1 repl) title)))
-    (org-make-link-string link title)))
+    (org-link-make-string link title)))
 
 (defun orca-require-program (program)
   "Check system for PROGRAM, printing error if unfound."
