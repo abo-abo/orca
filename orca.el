@@ -150,7 +150,7 @@ Try to remove superfluous information, like the website title."
             (and (eq major-mode 'org-mode)
                  (ignore-errors
                    (save-excursion
-                     (zo-left 1)
+                     (zo-left 99)
                      (and (equal (org-get-heading) "Projects")
                           (setq pt (point)))))))
       (org-capture-put
