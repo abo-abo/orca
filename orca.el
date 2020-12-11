@@ -148,11 +148,12 @@ Try to remove superfluous information, like the website title."
     (setq orca-dbg-buf orig-buffer)
     (when (with-current-buffer orig-buffer
             (and (eq major-mode 'org-mode)
-                 (ignore-errors
-                   (save-excursion
-                     (zo-left 99)
-                     (and (equal (org-get-heading) "Projects")
-                          (setq pt (point)))))))
+                 (save-excursion
+                   (outline-back-to-heading)
+                   (while (> (org-current-level) 1)
+                     (setq pt (point))
+                     (zo-left 1))
+                   (equal (org-get-heading) "Projects"))))
       (org-capture-put
        :immediate-finish t
        :jump-to-captured t)
