@@ -63,13 +63,13 @@
         (entor (expand-file-name "wiki/ent.org" orca-org-directory))
         (stack (expand-file-name "wiki/stack.org" orca-org-directory))
         (github (expand-file-name "wiki/github.org" orca-org-directory)))
-    `((orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/emacs" ,emacs "\\* Reddit")
+    `((orca-handler-project)
+      (orca-handler-current-buffer "\\* Tasks")
+      (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/emacs" ,emacs "\\* Reddit")
       (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/" ,reddit "\\* Posts")
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
       (orca-handler-match-url "http://stackoverflow.com/" ,stack "\\* Questions")
       (orca-handler-match-url "https://git\\(?:hub\\|lab\\).com/[^/]+/[^/]+/?\\'" ,github "\\* Repos")
-      (orca-handler-project)
-      (orca-handler-current-buffer "\\* Tasks")
       (orca-handler-file ,entor "\\* Articles")))
   "List of handlers by priority.
 
