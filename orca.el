@@ -129,6 +129,11 @@ Try to remove superfluous information, like the website title."
   ;; We are in the server buffer; the actual current buffer is first
   ;; on `buffer-list'.
   (let ((orig-buffer (nth 0 (buffer-list))))
+    (when (and (with-current-buffer orig-buffer
+                 (not (eq major-mode 'org-mode)))
+               (with-current-buffer (nth 1 (buffer-list))
+                 (eq major-mode 'org-mode)))
+      (setq orig-buffer (nth 1 (buffer-list))))
     (setq orca-dbg-buf orig-buffer)
     (when (with-current-buffer orig-buffer
             (and (eq major-mode 'org-mode)
