@@ -34,13 +34,14 @@
 
 ;;* Org config
 ;; In the Firefox extension https://github.com/sprig/org-capture-extension:
-;; - "l" is unselected template
+;; - "L" is unselected template
 ;; - "p" is selected template
-(dolist (key '("l" "p"))
-  (add-to-list 'org-capture-templates
-               `(,key "Link" entry #'orca-handle-link
-                      "* TODO %(orca-wash-link)\nAdded: %T\n%?")))
-(setq org-protocol-default-template-key "l")
+(dolist (key '("L" "p"))
+  (unless (assoc key org-capture-templates)
+    (add-to-list 'org-capture-templates
+                 `(,key "Link" entry #'orca-handle-link
+                        "* TODO %(orca-wash-link)\nAdded: %T\n%?"))))
+(setq org-protocol-default-template-key "L")
 
 ;;* Orca config
 (defgroup orca nil
