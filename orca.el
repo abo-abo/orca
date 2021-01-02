@@ -191,7 +191,7 @@ Try to remove superfluous information, like the website title."
         (progn
           (message "%d old link(s)" (length old-links))
           (let ((old-link (car old-links)))
-            (if (string-match "\\([^:]+\\):\\([0-9]+\\):\\*+ *\\(TODO\\|DONE\\)" old-link)
+            (if (string-match "^\\(.*\\):\\([0-9]+\\):\\(.*\\)$" old-link)
                 (let ((file (match-string 1 old-link))
                       (line (string-to-number (match-string 2 old-link))))
                   (find-file file)
