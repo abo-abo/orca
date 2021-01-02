@@ -125,27 +125,26 @@ Try to remove superfluous information, like the website title."
 ;;* Handlers
 (defvar orca-dbg-buf nil)
 
+(defun orca--find-capture-buffer ()
+  (let ((p (lambda (b) (with-current-buffer b (eq major-mode 'org-mode)))))
+    (or (cl-find-if p (mapcar #'window-buffer (window-list)))
+        (cl-find-if p (buffer-list)))))
+
 (defun orca-handler-current-buffer (heading)
   "Select the current `org-mode' buffer with HEADING."
   ;; We are in the server buffer; the actual current buffer is first
   ;; on `buffer-list'.
-  (let ((orig-buffer (nth 0 (buffer-list))))
-    (when (and (with-current-buffer orig-buffer
-                 (not (eq major-mode 'org-mode)))
-               (with-current-buffer (nth 1 (buffer-list))
-                 (eq major-mode 'org-mode)))
-      (setq orig-buffer (nth 1 (buffer-list))))
-    (setq orca-dbg-buf orig-buffer)
+  (let ((orig-buffer (orca--find-capture-buffer)))
     (when (with-current-buffer orig-buffer
-            (and (eq major-mode 'org-mode)
-                 (save-excursion
-                   (goto-char (point-min))
-                   (re-search-forward heading nil t))))
+            (save-excursion
+              (goto-char (point-min))
+              (re-search-forward heading nil t)))
+      (switch-to-buffer orig-buffer)
+      (goto-char (match-end 0))
       (org-capture-put
        :immediate-finish t
        :jump-to-captured t)
-      (switch-to-buffer orig-buffer)
-      (goto-char (match-end 0)))))
+      t)))
 
 (defun orca-handler-project ()
   "Select the current project."
