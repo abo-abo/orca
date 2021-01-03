@@ -134,11 +134,12 @@ Try to remove superfluous information, like the website title."
   "Select the current `org-mode' buffer with HEADING."
   ;; We are in the server buffer; the actual current buffer is first
   ;; on `buffer-list'.
-  (let ((orig-buffer (orca--find-capture-buffer)))
+  (let ((orig-buffer (nth 0 (buffer-list))))
     (when (with-current-buffer orig-buffer
-            (save-excursion
-              (goto-char (point-min))
-              (re-search-forward heading nil t)))
+            (and (eq major-mode 'org-mode)
+                 (save-excursion
+                   (goto-char (point-min))
+                   (re-search-forward heading nil t))))
       (switch-to-buffer orig-buffer)
       (goto-char (match-end 0))
       (org-capture-put
