@@ -1,11 +1,11 @@
 ;;; orca.el --- Org Capture -*- lexical-binding: t -*-
 
-;; Copyright (C) 2017 Oleh Krehel
+;; Copyright (C) 2017-2021 Oleh Krehel
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/orca
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.3") (zoutline "0.1.0"))
 ;; Keywords: org, convenience
 
 ;; This file is not part of GNU Emacs
