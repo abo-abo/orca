@@ -60,14 +60,12 @@
 
 (defcustom orca-handler-list
   (let ((emacs (expand-file-name "wiki/emacs.org" orca-org-directory))
-        (reddit (expand-file-name "wiki/reddit.org" orca-org-directory))
         (entor (expand-file-name "wiki/ent.org" orca-org-directory))
         (stack (expand-file-name "wiki/stack.org" orca-org-directory))
         (github (expand-file-name "wiki/github.org" orca-org-directory)))
     `((orca-handler-project)
       (orca-handler-current-buffer "\\* Tasks")
       (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/emacs" ,emacs "\\* Reddit")
-      (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/" ,reddit "\\* Posts")
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
       (orca-handler-match-url "http://stackoverflow.com/" ,stack "\\* Questions")
       (orca-handler-match-url "https://git\\(?:hub\\|lab\\).com/[^/]+/[^/]+/?\\'" ,github "\\* Repos")
