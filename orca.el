@@ -60,7 +60,7 @@
 
 (defcustom orca-handler-list
   (let ((emacs (expand-file-name "wiki/emacs.org" orca-org-directory))
-        (entor (expand-file-name "wiki/ent.org" orca-org-directory))
+        (inbox (expand-file-name "inbox.org" orca-org-directory))
         (stack (expand-file-name "wiki/stack.org" orca-org-directory))
         (github (expand-file-name "wiki/github.org" orca-org-directory)))
     `((orca-handler-project)
@@ -69,7 +69,7 @@
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
       (orca-handler-match-url "http://stackoverflow.com/" ,stack "\\* Questions")
       (orca-handler-match-url "https://git\\(?:hub\\|lab\\).com/[^/]+/[^/]+/?\\'" ,github "\\* Repos")
-      (orca-handler-file ,entor "\\* Articles")))
+      (orca-handler-file ,inbox "\\* Tasks")))
   "List of handlers by priority.
 
 Each item is a function of zero arguments that opens an
