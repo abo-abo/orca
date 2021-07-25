@@ -69,7 +69,7 @@
       (orca-handler-match-url "https://emacs.stackexchange.com/" ,emacs "\\* Questions")
       (orca-handler-match-url "http://stackoverflow.com/" ,stack "\\* Questions")
       (orca-handler-match-url "https://git\\(?:hub\\|lab\\).com/[^/]+/[^/]+/?\\'" ,github "\\* Repos")
-      (orca-handler-file ,inbox "\\* Tasks")))
+      (orca-handler-file ,inbox "* Tasks")))
   "List of handlers by priority.
 
 Each item is a function of zero arguments that opens an
@@ -169,7 +169,12 @@ Try to remove superfluous information, like the website title."
   (when (file-exists-p file)
     (find-file file)
     (goto-char (point-min))
-    (re-search-forward heading nil t)
+    (if (string= heading "* Tasks")
+        (progn
+          (unless (search-forward heading nil t)
+            (insert heading "\n")
+            (backward-char)))
+      (re-search-forward heading nil t))
     (org-capture-put
      :immediate-finish t
      :jump-to-captured t)
