@@ -192,17 +192,19 @@ Try to remove superfluous information, like the website title."
           (counsel--sl
            (format "rg -Fn '%s'" link))))
     (if old-links
-        (progn
-          (message "%d old link(s)" (length old-links))
-          (let ((old-link (car old-links)))
-            (if (string-match "^\\(.*\\):\\([0-9]+\\):\\(.*\\)$" old-link)
-                (let ((file (match-string 1 old-link))
-                      (line (string-to-number (match-string 2 old-link))))
-                  (find-file file)
-                  (goto-char (point-min))
-                  (forward-line (1- line)))
-              (error "Could not match %s" old-link)))
-          t))))
+        (let ((old-link (car old-links)))
+          (if (string-match "^\\(.*\\):\\([0-9]+\\):\\(.*\\)$" old-link)
+              (let ((file (match-string 1 old-link))
+                    (line (string-to-number (match-string 2 old-link))))
+                (find-file file)
+                (goto-char (point-min))
+                (forward-line (1- line))
+                (if (string-match-p "https://www.youtube.com" link)
+                    (not (y-or-n-p "old link: redo?"))
+                  (message "%d old link(s)" (length old-links))
+                  t))
+            (error "Could not match %s" old-link)))
+      nil)))
 
 (defun orca-handle-link ()
   "Select a location to store the current link."
