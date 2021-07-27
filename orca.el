@@ -190,7 +190,7 @@ Try to remove superfluous information, like the website title."
          (default-directory orca-org-directory)
          (old-links
           (counsel--sl
-           (format "rg -Fn '%s'" link))))
+           (format "rg -Fn '[%s]'" link))))
     (if old-links
         (let ((old-link (car old-links)))
           (if (string-match "^\\(.*\\):\\([0-9]+\\):\\(.*\\)$" old-link)
