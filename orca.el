@@ -40,7 +40,7 @@
   (unless (assoc key org-capture-templates)
     (add-to-list 'org-capture-templates
                  `(,key "Link" entry #'orca-handle-link
-                        "* TODO %(orca-wash-link)\nAdded: %T\n%?"))))
+                        "* TODO %(orca-wash-link)\nAdded: %U\n%(orca-link-hooks)\n"))))
 (setq org-protocol-default-template-key "L")
 
 ;;* Orca config
@@ -48,11 +48,22 @@
   "Org capture"
   :group 'org)
 
-(defcustom orca-wash-list
-  '((" - Emacs Stack Exchange" "")
-    (" - Stack Overflow" ""))
-  "A list of (REGEX REP) to be applied on link title."
-  :type 'list)
+(defvar orca--wash-hash (make-hash-table :test #'equal)
+  "A hash of (HOST REP) to be applied on link title.")
+
+(defun orca-wash-configure (host title-transformer)
+  "Configure HOST with TITLE-TRANSFORMER."
+  (puthash host title-transformer orca--wash-hash))
+
+(defun orca-wash-rep (title-part rep)
+  "Replace TITLE-PART."
+  (lambda (title)
+    (replace-regexp-in-string title-part rep title)))
+
+(orca-wash-configure
+ "https://emacs.stackexchange.com/" (orca-wash-rep " - Emacs Stack Exchange" ""))
+(orca-wash-configure
+ "https://stackoverflow.com" (orca-wash-rep " - Stack Overflow" ""))
 
 (defcustom orca-org-directory "~/Dropbox/org"
   "The directory where the Org files are."
@@ -96,12 +107,16 @@ appropiriate file and returns non-nil on match."
 (defun orca-wash-link ()
   "Return a pretty-printed top of `org-stored-links'.
 Try to remove superfluous information, like the website title."
-  (let ((link (caar org-stored-links))
-        (title (cl-cadar org-stored-links)))
-    (dolist (repl orca-wash-list)
-      (setq title (replace-regexp-in-string
-                   (nth 0 repl) (nth 1 repl) title)))
-    (org-link-make-string link title)))
+  (let* ((link (caar org-stored-links))
+         (title (cl-cadar org-stored-links))
+         (plink (url-generic-parse-url link))
+         (blink (concat (url-type plink) "://" (url-host plink)))
+         (washer (gethash blink orca--wash-hash)))
+    (org-link-make-string
+     link
+     (if washer
+         (funcall washer title)
+       title))))
 
 (defun orca-require-program (program)
   "Check system for PROGRAM, printing error if unfound."
@@ -121,6 +136,15 @@ Try to remove superfluous information, like the website title."
     (raise-frame)))
 
 ;;* Handlers
+(defvar orca-link-hook nil)
+
+(defun orca-link-hooks ()
+  (prog1
+      (mapconcat #'funcall
+                 orca-link-hook
+                 "\n")
+    (setq orca-link-hook nil)))
+
 (defvar orca-dbg-buf nil)
 
 (defun orca--find-capture-buffer ()
