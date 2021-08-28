@@ -65,15 +65,11 @@
 (orca-wash-configure
  "https://stackoverflow.com" (orca-wash-rep " - Stack Overflow" ""))
 
-(defcustom orca-org-directory "~/Dropbox/org"
-  "The directory where the Org files are."
-  :type 'directory)
-
 (defcustom orca-handler-list
-  (let ((emacs (expand-file-name "wiki/emacs.org" orca-org-directory))
-        (inbox (expand-file-name "inbox.org" orca-org-directory))
-        (stack (expand-file-name "wiki/stack.org" orca-org-directory))
-        (github (expand-file-name "wiki/github.org" orca-org-directory)))
+  (let ((emacs (expand-file-name "wiki/emacs.org" org-directory))
+        (inbox (expand-file-name "inbox.org" org-directory))
+        (stack (expand-file-name "wiki/stack.org" org-directory))
+        (github (expand-file-name "wiki/github.org" org-directory)))
     `((orca-handler-project)
       (orca-handler-current-buffer "\\* Tasks")
       (orca-handler-match-url "https://\\(?:www\\.\\)?\\(?:old\\.\\)?reddit.com/r/emacs" ,emacs "\\* Reddit")
@@ -211,7 +207,7 @@ Try to remove superfluous information, like the website title."
 
 (defun orca-detect-already-captured-link ()
   (let* ((link (caar org-stored-links))
-         (default-directory orca-org-directory)
+         (default-directory org-directory)
          (old-links
           (counsel--sl
            (format "rg -Fn '[%s]'" link))))
@@ -233,8 +229,8 @@ Try to remove superfluous information, like the website title."
 (defun orca-handle-link ()
   "Select a location to store the current link."
   (orca-raise-frame)
-  (if (and (file-exists-p orca-org-directory)
-           (file-exists-p (expand-file-name ".git" orca-org-directory))
+  (if (and (file-exists-p org-directory)
+           (file-exists-p (expand-file-name ".git" org-directory))
            (orca-detect-already-captured-link))
       (org-capture-kill)
     (let ((hands orca-handler-list)
