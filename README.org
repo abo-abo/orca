@@ -11,6 +11,8 @@ Here is my example list of configurations:
 - If the current buffer is e.g. =foo.org= and it has a =* Tasks= heading, capture to =foo.org:Tasks=
 - If nothing else matches, capture to =ent.org:Articles=.
 
+The package needs =ripgrep= to be able to detect already-captured links, but also works without.
+
 * Configuration
 Just requiring the package, only the "capture to current buffer"
 method will work, since no file paths are recognized:

@@ -31,6 +31,8 @@
 ;;; Code:
 (require 'org-protocol)
 (require 'org-capture)
+(require 'zoutline)
+(require 'url-parse)
 
 ;;* Org config
 ;; In the Firefox extension https://github.com/sprig/org-capture-extension:
@@ -209,8 +211,8 @@ Try to remove superfluous information, like the website title."
   (let* ((link (caar org-stored-links))
          (default-directory org-directory)
          (old-links
-          (counsel--sl
-           (format "rg -Fn '[%s]'" link))))
+          (split-string (shell-command-to-string
+                         (format "rg -Fn '[%s]'" link)) "\n" t)))
     (if old-links
         (let ((old-link (car old-links)))
           (if (string-match "^\\(.*\\):\\([0-9]+\\):\\(.*\\)$" old-link)
