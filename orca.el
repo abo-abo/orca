@@ -207,12 +207,11 @@ Try to remove superfluous information, like the website title."
   (when (string-match url-regex (caar org-stored-links))
     (orca-handler-file file heading)))
 
-(defun orca-detect-already-captured-link ()
-  (let* ((link (caar org-stored-links))
-         (default-directory org-directory)
+(defun orca-detect-already-captured-link (link)
+  (let* ((default-directory org-directory)
          (old-links
           (split-string (shell-command-to-string
-                         (format "rg -Fn '[%s]'" link)) "\n" t)))
+                         (format "rg -Fn '%s'" link)) "\n" t)))
     (if old-links
         (let ((old-link (car old-links)))
           (if (string-match "^\\(.*\\):\\([0-9]+\\):\\(.*\\)$" old-link)
@@ -233,7 +232,8 @@ Try to remove superfluous information, like the website title."
   (orca-raise-frame)
   (if (and (file-exists-p org-directory)
            (file-exists-p (expand-file-name ".git" org-directory))
-           (orca-detect-already-captured-link))
+           (orca-detect-already-captured-link
+            (format "[%s]" (caar org-stored-links))))
       (org-capture-kill)
     (let ((hands orca-handler-list)
           hand)
