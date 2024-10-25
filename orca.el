@@ -66,6 +66,10 @@
  "https://emacs.stackexchange.com/" (orca-wash-rep " - Emacs Stack Exchange" ""))
 (orca-wash-configure
  "https://stackoverflow.com" (orca-wash-rep " - Stack Overflow" ""))
+(orca-wash-configure
+ "https://www.podbean.com" (orca-wash-rep "Download - \\([^|]+*\\) | Podbean" "\\1"))
+(orca-wash-configure
+ "https://www.youtube.com" (orca-wash-rep " - YouTube" ""))
 
 (defcustom orca-handler-list
   (let ((emacs (expand-file-name "wiki/emacs.org" org-directory))
