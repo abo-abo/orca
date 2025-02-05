@@ -129,13 +129,24 @@ Try to remove superfluous information, like the website title."
 
 (defun orca-raise-frame ()
   "Put Emacs frame into focus."
-  (if (eq system-type 'gnu/linux)
-      (progn
-        (orca-require-program "wmctrl")
-        (call-process
-         "wmctrl" nil nil nil "-i" "-R"
-         (frame-parameter (selected-frame) 'outer-window-id)))
-    (raise-frame)))
+  (let (window-id)
+    (if (eq system-type 'gnu/linux)
+        (cond
+         ;; works on Wayland and X
+         ;; but requires Emacs docked in the second position:
+         ;; we send the s-2 keyboard shortcut that GNOME uses
+         ((orca-require-program "ydotool")
+          (call-process
+           "ydotool" nil nil nil "key" "125:1" "3:1" "3:0" "125:0"))
+         ((and (orca-require-program "wmctrl")
+               (setq window-id
+                     (or
+                      (frame-parameter (selected-frame) 'outer-window-id)
+                      (frame-parameter (selected-frame) 'window-id))))
+          (call-process
+           "wmctrl" nil nil nil "-i" "-R"
+           window-id)))
+      (raise-frame))))
 
 ;;* Handlers
 (defvar orca-link-hook nil)
